@@ -18,11 +18,11 @@ class DeployedItClient
   end
 
   def new_deploy(user, title)
-    deploy_body = File.read('changesets/two_changesets.txt')
+    deploy_body = File.read('test/changesets/two_changesets.txt')
     representation = form_encoded({"user"  => user,
                                    "title" => title,
                                    "body"  => deploy_body,
-                                   "project" => "Main Project" })
+                                   "project" => "Main App" })
 
     response = open(@service_root + '/deploys', :method => :post, :body => representation)
   end
