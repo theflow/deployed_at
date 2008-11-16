@@ -4,7 +4,7 @@
     <td><a href="/deploys/<%= deploy.id %>"><%= deploy.title %></a> <span class="small">(<%= deploy.changes %> changes)</span></td>
     <td>by <%= deploy.user %></td>
     <td class="quiet"><%= deploy.created_at.strftime('%b %d %H:%M') %></td>
-    <td><%= deploy.project %></td>
+    <td><%= deploy.project.name %></td>
   </tr>
   <% end %>
 </table>
