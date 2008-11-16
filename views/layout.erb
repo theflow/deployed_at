@@ -3,6 +3,28 @@
 <head>
   <title><%= @title || 'Deployed It!' %></title>
   <link type="text/css" href="/blueprint/blueprint/screen.css" rel="stylesheet" media="screen"/>
+  <style>
+    #project_nav {
+      margin: 0 0 10px 1px;
+    }
+    
+    #project_nav a {
+      text-decoration: none;
+      background-color: #381392;
+      border: 1px solid #381392;
+      color: white;
+      padding: 2px 5px;
+      margin-right: 5px;
+    }
+    
+    #project_nav a:hover,
+    #project_nav a.active {
+      color: #001092;
+      background-color: white;
+    }
+    
+  </style>
+
 </head>
 
 <body>

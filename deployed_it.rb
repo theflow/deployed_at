@@ -46,13 +46,20 @@ end
 DataMapper.auto_upgrade!
 
 get '/' do
+  @projects = Project.all
   @deploys = Deploy.all(:order => [:created_at.desc])
+  erb :index
+end
+
+get '/projects/:id' do
+  @projects = Project.all
+  @project = Project.get(params[:id])
+  @deploys = @project.deploys
   erb :index
 end
 
 post '/deploys' do
   project = Project.find_or_create(params[:project])
-  puts project.id
   project.deploys.create(:title => params[:title], :user => params[:user], :body => params[:body])
 end
 
