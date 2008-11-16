@@ -47,23 +47,34 @@ DataMapper.auto_upgrade!
 
 get '/' do
   @projects = Project.all
-  @deploys = Deploy.all(:order => [:created_at.desc])
-  erb :list_deploys
+
+  if @projects.size == 0
+    @title = "Deployed It!"
+    erb "<p>No deploys recorded yet</p>"
+  else
+    redirect "/projects/#{@projects.first.id}"
+  end
 end
 
 get '/projects/:id' do
   @projects = Project.all
   @project = Project.get(params[:id])
-  @deploys = @project.deploys
+  @deploys = @project.deploys.all(:order => [:created_at.desc])
+
+  @title = "Recent deploys for #{@project.name}"
   erb :list_deploys
+end
+
+get '/deploys/:id' do
+  @projects = Project.all
+  @deploy = Deploy.get(params[:id])
+  @project = @deploy.project
+
+  @title = "[#{@project.name}] #{@deploy.title}"
+  erb :show_deploy
 end
 
 post '/deploys' do
   project = Project.find_or_create(params[:project])
   project.deploys.create(:title => params[:title], :user => params[:user], :body => params[:body])
-end
-
-get '/deploys/:id' do
-  @deploy = Deploy.get(params[:id])
-  erb :show_deploy
 end

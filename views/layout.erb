@@ -24,11 +24,21 @@
     }
     
   </style>
-
 </head>
 
 <body>
   <div class="container">
+    <h1><%= @title %></h1>
+
+    <p id="project_nav">
+    <% if @projects.size > 1 %>
+      <% for project in @projects %>
+        <a <%= 'class="active"' if @project && @project == project %> href="/projects/<%= project.id %>"><%= project.name %></a>
+      <% end %>
+    <% end %>
+    </p>
+    <hr />
+
     <%= yield %>
   </div>
 </body>
