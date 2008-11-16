@@ -60,8 +60,3 @@ get '/deploys/:id' do
   @deploy = Deploy.get(params[:id])
   erb :show
 end
-
-get '/create' do
-  deploy = Deploy.new(:title => 'First Deploy', :user => 'Florian')
-  deploy.save
-end
