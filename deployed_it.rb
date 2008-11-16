@@ -78,3 +78,10 @@ post '/deploys' do
   project = Project.find_or_create(params[:project])
   project.deploys.create(:title => params[:title], :user => params[:user], :body => params[:body])
 end
+
+helpers do
+  def format_time(time)
+    time.strftime('%b %d %H:%M')
+  end
+  
+end
