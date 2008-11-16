@@ -1,5 +1,5 @@
-#!/usr/bin/ruby -rubygems
-require 'rest-open-uri'
+#!/usr/bin/ruby
+require 'net/http'
 require 'uri'
 require 'cgi'
 
@@ -8,23 +8,15 @@ class DeployedItClient
     @service_root = service_root
   end
 
-  def form_encoded(hash)
-    encoded = []
-    hash.each do |key, value|
-      encoded << CGI.escape(key) + '=' + CGI.escape(value)
-    end
-
-    encoded.join('&')
-  end
-
   def new_deploy(user, title)
     deploy_body = File.read('test/changesets/two_changesets.txt')
-    representation = form_encoded({"user"  => user,
-                                   "title" => title,
-                                   "body"  => deploy_body,
-                                   "project" => "Main App" })
+    args = {'user'    => user,
+            'title'   => title,
+            'body'    => deploy_body,
+            'project' => 'Main App' }
 
-    response = open(@service_root + '/deploys', :method => :post, :body => representation)
+    url = URI.parse(@service_root + '/deploys')
+    Net::HTTP.post_form(url, args)
   end
 end
 
