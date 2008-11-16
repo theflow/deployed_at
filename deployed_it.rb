@@ -48,14 +48,14 @@ DataMapper.auto_upgrade!
 get '/' do
   @projects = Project.all
   @deploys = Deploy.all(:order => [:created_at.desc])
-  erb :index
+  erb :list_deploys
 end
 
 get '/projects/:id' do
   @projects = Project.all
   @project = Project.get(params[:id])
   @deploys = @project.deploys
-  erb :index
+  erb :list_deploys
 end
 
 post '/deploys' do
@@ -65,5 +65,5 @@ end
 
 get '/deploys/:id' do
   @deploy = Deploy.get(params[:id])
-  erb :show
+  erb :show_deploy
 end
