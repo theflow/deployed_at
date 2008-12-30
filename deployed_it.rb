@@ -8,13 +8,15 @@ DataMapper.setup(:default, "sqlite3://#{Dir.pwd}/database.sqlite3")
 class Deploy
   include DataMapper::Resource
 
-  property :id,         Integer, :serial => true
-  property :title,      String
-  property :user,       String
-  property :changes,    Integer, :default => 0
-  property :body,       Text
-  property :project_id, Integer
-  property :created_at, DateTime
+  property :id,          Integer, :serial => true
+  property :title,       String
+  property :user,        String
+  property :head_rev,    String
+  property :current_rev, String
+  property :changes,     Integer, :default => 0
+  property :scm_log,     Text
+  property :project_id,  Integer
+  property :created_at,  DateTime
 
   belongs_to :project
 
@@ -25,7 +27,7 @@ class Deploy
   end
 
   def get_number_of_changes
-    body.blank? ? 0 : body.scan(/^r\d+/).size
+    scm_log.blank? ? 0 : scm_log.scan(/^r\d+/).size
   end
 end
 
@@ -76,7 +78,11 @@ end
 
 post '/deploys' do
   project = Project.find_or_create(params[:project])
-  project.deploys.create(:title => params[:title], :user => params[:user], :body => params[:body])
+  project.deploys.create(:title => params[:title],
+                         :user => params[:user],
+                         :scm_log => params[:scm_log],
+                         :head_rev => params[:head_rev],
+                         :current_rev => params[:current_rev])
 end
 
 helpers do

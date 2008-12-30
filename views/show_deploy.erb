@@ -1,5 +1,5 @@
 <h3 class="quiet">by <%= @deploy.user %> on <%= format_time(@deploy.created_at) %></h3>
 
 <pre>
-<%= @deploy.body %>
+<%= @deploy.scm_log %>
 </pre>
