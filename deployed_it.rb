@@ -21,6 +21,11 @@ class Deploy
   belongs_to :project
 
   before :save, :set_number_of_changes
+  before :save, :set_proper_title
+
+  def set_proper_title
+    self.title = "Deploy of revision #{head_rev}" if title.blank?
+  end
 
   def set_number_of_changes
     self.changes = get_number_of_changes
