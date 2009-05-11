@@ -5,6 +5,8 @@ require 'dm-timestamps'
 
 DataMapper.setup(:default, "sqlite3://#{Dir.pwd}/database.sqlite3")
 
+enable :sessions
+
 class Deploy
   include DataMapper::Resource
 
@@ -50,6 +52,17 @@ class Project
   end
 end
 
+class User
+  include DataMapper::Resource
+
+  property :id,         Integer, :serial => true
+  property :email,      String
+
+  def self.find_or_create(email)
+    first(:email => email) || create(:email => email)
+  end
+end
+
 DataMapper.auto_upgrade!
 
 get '/' do
@@ -90,9 +103,24 @@ post '/deploys' do
                          :current_rev => params[:current_rev])
 end
 
+get '/session' do
+  @projects = Project.all
+
+  @title = 'Log in'
+  erb :session_show
+end
+
+post '/session' do
+  redirect '/session' and return if params[:email].blank?
+
+  user = User.find_or_create(params[:email])
+  session[:user_id] = user.id
+
+  redirect '/subscriptions'
+end
+
 helpers do
   def format_time(time)
     time.strftime('%b %d %H:%M')
   end
-  
 end
