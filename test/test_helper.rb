@@ -5,4 +5,4 @@ require 'context'
 require 'sinatra'
 require 'sinatra/test/unit'
 
-require 'deployed_it'
+require 'deployed_at'
