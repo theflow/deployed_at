@@ -89,8 +89,6 @@ end
 DataMapper.auto_upgrade!
 
 get '/' do
-  @projects = Project.all
-
   if @projects.size == 0
     @title = "Deployed It!"
     erb "<p>No deploys recorded yet</p>"
@@ -100,7 +98,6 @@ get '/' do
 end
 
 get '/projects/:id' do
-  @projects = Project.all
   @project = Project.get(params[:id])
   @deploys = @project.deploys.all(:order => [:created_at.desc])
 
@@ -109,7 +106,6 @@ get '/projects/:id' do
 end
 
 get '/deploys/:id' do
-  @projects = Project.all
   @deploy = Deploy.get(params[:id])
   @project = @deploy.project
 
@@ -127,8 +123,6 @@ post '/deploys' do
 end
 
 get '/session' do
-  @projects = Project.all
-
   @title = 'Log in'
   erb :session_show
 end
@@ -143,26 +137,34 @@ post '/session' do
 end
 
 get '/subscriptions' do
-  @projects = Project.all
-  redirect 'session' and return if session[:user_id].blank?
+  redirect '/session' and return if logged_out?
 
-  @user = User.get(session[:user_id])
-  @subscribed_projects = @user.projects
+  @subscribed_projects = current_user.projects
+
   @title = 'Your subscriptions'
   erb :subscriptions_list
 end
 
 post '/subscriptions' do
-  redirect 'session' and return if session[:user_id].blank?
+  redirect '/session' and return if logged_out?
 
-  @user = User.get(session[:user_id])
-  @user.manage_subscriptions(params)
-
+  current_user.manage_subscriptions(params)
   redirect 'subscriptions'
 end
 
+before do
+  @projects = Project.all if request.get?
+end
 
 helpers do
+  def logged_out?
+    session[:user_id].blank?
+  end
+
+  def current_user
+    @user ||= User.get(session[:user_id])
+  end
+
   def format_time(time)
     time.strftime('%b %d %H:%M')
   end
