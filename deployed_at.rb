@@ -105,7 +105,7 @@ get '/projects/:id' do
   @deploys = @project.deploys.all(:order => [:created_at.desc])
 
   @title = "Recent deploys for #{@project.name}"
-  erb :list_deploys
+  erb :deploys_list
 end
 
 get '/deploys/:id' do
@@ -114,7 +114,7 @@ get '/deploys/:id' do
   @project = @deploy.project
 
   @title = "[#{@project.name}] #{@deploy.title}"
-  erb :show_deploy
+  erb :deploys_show
 end
 
 post '/deploys' do
