@@ -1,0 +1,16 @@
+<form action="/subscriptions" method="post">
+
+  <% for project in @projects %>
+  <div class="span-1 prepend-1">
+    <input type="checkbox" id="project_<%= project.id %>" name="<%= project.id %>" <%= 'checked="true"' if @subscribed_projects.include?(project) %>>
+  </div>
+  <div class="span-22 last">
+    <label for="project_<%= project.id %>"><%= project.name %></label>
+  </div>
+  <% end %>
+
+  <div class="span-1 prepend-1">
+    <input type="submit" value="Save"/>
+  </div>
+
+</form>

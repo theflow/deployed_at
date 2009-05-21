@@ -46,6 +46,9 @@ class Project
 
   has n, :deploys
 
+  has n, :subscriptions
+  has n, :users, :through => :subscriptions
+
   def self.find_or_create(name)
     project = self.first(:name => name)
     project || self.create(:name => name)
@@ -58,9 +61,21 @@ class User
   property :id,         Integer, :serial => true
   property :email,      String
 
+  has n, :subscriptions
+  has n, :projects, :through => :subscriptions
+
   def self.find_or_create(email)
     first(:email => email) || create(:email => email)
   end
+end
+
+class Subscription
+  include DataMapper::Resource
+
+  property :id,         Integer, :serial => true
+
+  belongs_to :project
+  belongs_to :user
 end
 
 DataMapper.auto_upgrade!
@@ -118,6 +133,21 @@ post '/session' do
 
   redirect '/subscriptions'
 end
+
+get '/subscriptions' do
+  @projects = Project.all
+  redirect 'session' and return if session[:user_id].blank?
+
+  @user = User.get(session[:user_id])
+  @subscribed_projects = @user.projects
+  @title = 'Your subscriptions'
+  erb :subscriptions_list
+end
+
+post '/subscriptions' do
+  p param
+end
+
 
 helpers do
   def format_time(time)
