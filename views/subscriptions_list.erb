@@ -1,16 +1,13 @@
-<form action="/subscriptions" method="post">
+<div class="span-22 prepend-1 append-1 prepend-top">
+  <form action="/subscriptions" method="post">
 
-  <% for project in @projects %>
-  <div class="span-1 prepend-1">
-    <input type="checkbox" id="project_<%= project.id %>" name="<%= project.id %>" <%= 'checked="true"' if @subscribed_projects.include?(project) %>>
-  </div>
-  <div class="span-22 last">
-    <label for="project_<%= project.id %>"><%= project.name %></label>
-  </div>
-  <% end %>
+    <% for project in @projects %>
+      <input class="span-2" type="checkbox" id="project_<%= project.id %>" name="<%= project.id %>" <%= 'checked="true"' if @subscribed_projects.include?(project) %>>
+      <label class="span-20" for="project_<%= project.id %>"><%= project.name %></label>
+    <% end %>
 
-  <div class="span-1 prepend-1">
-    <input type="submit" value="Save"/>
-  </div>
-
-</form>
+    <div class="prepend-top">
+      <input type="submit" value="Save"/>
+    </div>
+  </form>
+</div>
