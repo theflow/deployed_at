@@ -12,7 +12,9 @@ Welcome to Blueprint! This is a CSS framework designed to cut down on your CSS d
 
 h2. Project Info
 
-* *Web*: "http://github.com/joshuaclayton/blueprint-css":http://github.com/joshuaclayton/blueprint-css
+* *Web*: "http://blueprintcss.org":http://blueprintcss.org
+* *Source*: "http://github.com/joshuaclayton/blueprint-css":http://github.com/joshuaclayton/blueprint-css
+* *Wiki*: "http://github.com/joshuaclayton/blueprint-css/wikis/home":http://github.com/joshuaclayton/blueprint-css/wikis/home
 * *Bug/Feature Tracking*: "http://blueprintcss.lighthouseapp.com":http://blueprintcss.lighthouseapp.com
 
 h2. Setup Instructions
@@ -35,7 +37,7 @@ h2. Tutorials
 
 * "Tutorial on BlueFlavor":http://blueflavor.com/blog/design/blueprintcss_101.php
 * "How to customize BP with the compressor script":http://jdclayton.com/blueprints_compress_a_walkthrough.html
-* "How to use a grid in a layout":http://subtraction.com/archives/2007/0318_oh_yeeaahh.php
+* "How to use a grid in a layout":http://subtraction.com/2007/03/18/oh-yeeaahh
 * "How to use a baseline in your typography":http://alistapart.com/articles/settingtypeontheweb
 
 h2. Files in Blueprint

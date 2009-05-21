@@ -86,7 +86,7 @@ module Blueprint
         self.plugins =          project['plugins']          || []
       
         if (layout = project['custom_layout'])
-          self.custom_layout = CustomLayout.new(:column_count => layout['column_count'], :column_width => layout['column_width'], :gutter_width => layout['gutter_width'])
+          self.custom_layout = CustomLayout.new(:column_count => layout['column_count'], :column_width => layout['column_width'], :gutter_width => layout['gutter_width'], :input_padding => layout['input_padding'], :input_border => layout['input_border'])
         end
         @loaded_from_settings = true
       end
@@ -138,16 +138,18 @@ module Blueprint
     def append_custom_css(css, current_file_name)
       # check to see if a custom (non-default) location was used for output files
       # if custom path is used, handle custom CSS, if any
-      return css unless self.custom_path
+      return css unless self.custom_path and self.custom_css[current_file_name]
 
-      overwrite_path = File.join(destination_path, (self.custom_css[current_file_name] || "my-#{current_file_name}"))
-      overwrite_css = File.exists?(overwrite_path) ? File.path_to_string(overwrite_path) : ""
+      self.custom_css[current_file_name].each do |custom_css|
+        overwrite_path = File.join(destination_path, (custom_css || "my-#{current_file_name}"))
+        overwrite_css = File.exists?(overwrite_path) ? File.path_to_string(overwrite_path) : ""
     
-      # if there's CSS present, add it to the CSS output
-      unless overwrite_css.blank?
-        puts "      + custom styles\n"
-        css += "/* #{overwrite_path} */\n"
-        css += CSSParser.new(overwrite_css).to_s + "\n"
+        # if there's CSS present, add it to the CSS output
+        unless overwrite_css.blank?
+          puts "      + custom styles (#{custom_css})\n"
+          css += "/* #{overwrite_path} */\n"
+          css += CSSParser.new(overwrite_css).to_s + "\n"
+        end
       end
     
       css
@@ -241,10 +243,10 @@ module Blueprint
 %(/* -----------------------------------------------------------------------
 
 
- Blueprint CSS Framework 0.7.1
- http://blueprintcss.googlecode.com
+ Blueprint CSS Framework 0.8
+ http://blueprintcss.org
 
-   * Copyright (c) 2007-2008. See LICENSE for more info.
+   * Copyright (c) 2007-Present. See LICENSE for more info.
    * See README for instructions on how to use Blueprint.
    * For credits and origins, see AUTHORS.
    * This is a compressed file. See the sources in the 'src' directory.
