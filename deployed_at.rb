@@ -64,6 +64,14 @@ class User
   has n, :subscriptions
   has n, :projects, :through => :subscriptions
 
+  def manage_subscriptions(param_hash)
+    subscriptions.clear
+    subscriptions.save
+    param_hash.keys.each do |project_id|
+      subscriptions.create(:project_id => project_id)
+    end
+  end
+
   def self.find_or_create(email)
     first(:email => email) || create(:email => email)
   end
@@ -145,7 +153,12 @@ get '/subscriptions' do
 end
 
 post '/subscriptions' do
-  p param
+  redirect 'session' and return if session[:user_id].blank?
+
+  @user = User.get(session[:user_id])
+  @user.manage_subscriptions(params)
+
+  redirect 'subscriptions'
 end
 
 
