@@ -1,0 +1,6 @@
+smtp_settings:
+  host: your.mailserver.com
+  port: 25
+  auth: :login
+  user: account_name
+  pass: account_password

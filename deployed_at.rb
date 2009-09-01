@@ -2,6 +2,7 @@ require 'rubygems'
 require 'sinatra'
 require 'dm-core'
 require 'dm-timestamps'
+require 'net/smtp'
 
 DataMapper.setup(:default, "sqlite3://#{Dir.pwd}/database.sqlite3")
 
@@ -25,6 +26,8 @@ class Deploy
   before :save, :set_number_of_changes
   before :save, :set_proper_title
 
+  after :save, :notify
+
   def set_proper_title
     self.title = "Deploy of revision #{head_rev}" if title.blank?
   end
@@ -35,6 +38,10 @@ class Deploy
 
   def get_number_of_changes
     scm_log.blank? ? 0 : scm_log.scan(/^r\d+/).size
+  end
+
+  def notify
+    DeployMailer.send(project, current_rev, head_rev, scm_log)
   end
 end
 
@@ -84,6 +91,52 @@ class Subscription
 
   belongs_to :project
   belongs_to :user
+end
+
+class DeployMailer
+  class << self
+    attr_accessor :config
+  end
+
+  def self.send(project, current_rev, head_rev, svn_log)
+    recipients = project.users.map { |u| u.email }
+    return if recipients.empty?
+
+    message_body = format_msg(project.name, current_rev, head_rev, svn_log)
+    send_by_smtp(message_body, 'DeployedAt <deployed_it@example.org>', recipients)
+  end
+
+  def self.send_by_smtp(body, from, to)
+    Net::SMTP.start(config[:host], config[:port], 'localhost', config[:user], config[:pass], config[:auth]) do |smtp|
+      smtp.send_message(body, from, to)
+    end
+  end
+
+  def self.format_msg(project_name, current_rev, head_rev, svn_log)
+    msg = <<END_OF_MESSAGE
+From: DeployedIt <deployed_it@example.org>
+To: DeployedIt <deployed_it@example.org>
+Subject: [DeployedIt] #{project_name} deploy
+
+
+* Deployment started at #{Time.now}
+
+* Changes in this deployment:
+
+#{svn_log}
+
+END_OF_MESSAGE
+  end
+end
+
+CONFIG_FILE = File.join(File.dirname(__FILE__), 'config.yml')
+
+if File.exist?(CONFIG_FILE)
+  DeployMailer.config = YAML::load_file(CONFIG_FILE)['smtp_settings']
+else
+  puts ' Please create a config file by copying the example config:'
+  puts ' $ cp config.example.yml config.yml'
+  exit
 end
 
 DataMapper.auto_upgrade!

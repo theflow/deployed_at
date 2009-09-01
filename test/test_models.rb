@@ -59,4 +59,20 @@ class DeployTest < Test::Unit::TestCase
     assert user.projects.include?(project2)
   end
 
+  test 'should not email anything when there are no subscriptions' do
+    project = Project.create(:name => 'project_1')
+
+    DeployMailer.expects(:send_by_smtp).never
+    project.deploys.create(:title => 'title', :user => 'user', :scm_log => 'log', :head_rev => '42', :current_rev => '23')
+  end
+
+  test 'should notify subscribers for a new deploy' do
+    project1 = Project.create(:name => 'project_1')
+    project2 = Project.create(:name => 'project_2')
+    Subscription.create(:project => project1, :user => User.create(:email => 'user1@test.com'))
+    Subscription.create(:project => project2, :user => User.create(:email => 'user2@test.com'))
+
+    DeployMailer.expects(:send_by_smtp).with(anything, anything, ['user1@test.com']).once
+    project1.deploys.create(:title => 'title', :user => 'user', :scm_log => 'log', :head_rev => '42', :current_rev => '23')
+  end
 end
