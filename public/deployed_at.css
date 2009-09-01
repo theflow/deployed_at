@@ -2,6 +2,11 @@ body {
   margin:1.5em 0;
 }
 
+#main_nav {
+  float: right;
+  font-weight: bold;
+}
+
 #project_nav {
   margin: 0 0 10px 1px;
 }

@@ -1,0 +1,13 @@
+<% if @deploys.empty? %>
+  <p>No deploys recorded yet</p>
+<% else %>
+  <table>
+    <% @deploys.each do |deploy| %>
+    <tr>
+      <td width="15%"><%= format_time(deploy.created_at) %></td>
+      <td><%= deploy.user %> deployed  <%= deploy.project.name %></td>
+      <td width="20%"><a href="/deploys/<%= deploy.id %>">show details &raquo;</a></td>
+    </tr>
+    <% end %>
+  </table>
+<% end %>

@@ -142,12 +142,10 @@ end
 DataMapper.auto_upgrade!
 
 get '/' do
-  if @projects.size == 0
-    @title = "Deployed It!"
-    erb "<p>No deploys recorded yet</p>"
-  else
-    redirect "/projects/#{@projects.first.id}"
-  end
+  @deploys = Deploy.all(:order => [:created_at.desc], :limit => 15)
+
+  @title = 'Recent deploys'
+  erb :dashboard
 end
 
 get '/projects/:id' do
