@@ -1,13 +1,18 @@
 <div class="span-22 prepend-1 append-1 prepend-top">
-  <form action="/subscriptions" method="post">
+  <h4>Whenever a deploy is recorded for one of your subscribed projects, you'll get an email.</h4>
 
+  <form action="/subscriptions" method="post">
     <% for project in @projects %>
-      <input class="span-2" type="checkbox" id="project_<%= project.id %>" name="<%= project.id %>" <%= 'checked="true"' if @subscribed_projects.include?(project) %>>
-      <label class="span-20" for="project_<%= project.id %>"><%= project.name %></label>
+      <div class="span-2">
+        <input type="checkbox" id="project_<%= project.id %>" name="<%= project.id %>" <%= 'checked="true"' if @subscribed_projects.include?(project) %>>
+      </div>
+      <div class="span-18">
+        <label for="project_<%= project.id %>"><%= project.name %></label>
+      </div>
     <% end %>
 
-    <div class="prepend-top">
-      <input type="submit" value="Save"/>
+    <div class="span-20 prepend-top">
+      <input type="submit" value="Save your subscriptions"/>
     </div>
   </form>
 </div>
