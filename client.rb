@@ -12,7 +12,7 @@ class DeployedItClient
     deploy_body = File.read('test/changesets/two_changesets.txt')
     args = {'user'    => user,
             'title'   => title,
-            'body'    => deploy_body,
+            'scm_log' => deploy_body,
             'project' => 'Main App' }
 
     url = URI.parse(@service_root + '/deploys')
