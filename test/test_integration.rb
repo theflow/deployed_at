@@ -1,6 +1,14 @@
 require File.join(File.dirname(__FILE__), 'test_helper')
 
+require 'rack/test'
+require 'webrat'
+
+Webrat.configure do |config|
+  config.mode = :rack
+end
+
 class IntegrationTest < Test::Unit::TestCase
+  include Rack::Test::Methods
   include Webrat::Methods
   include Webrat::Matchers
 
@@ -19,6 +27,10 @@ class IntegrationTest < Test::Unit::TestCase
         repository.adapter.pop_transaction
       end
     end
+  end
+
+  def app
+    Sinatra::Application
   end
 
   test 'should show the dashboard' do
