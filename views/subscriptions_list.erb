@@ -4,7 +4,7 @@
   <form action="/subscriptions" method="post">
     <% for project in @projects %>
       <div class="span-2">
-        <input type="checkbox" id="project_<%= project.id %>" name="<%= project.id %>" <%= 'checked="true"' if @subscribed_projects.include?(project) %>>
+        <input type="checkbox" id="project_<%= project.id %>" name="<%= project.id %>" <%= 'checked="checked"' if @subscribed_projects.include?(project) %>>
       </div>
       <div class="span-18">
         <label for="project_<%= project.id %>"><%= project.name %></label>
