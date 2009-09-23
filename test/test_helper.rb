@@ -3,9 +3,14 @@ $: << File.join(File.dirname(__FILE__), '..')
 require 'rubygems'
 require 'context'
 require 'mocha'
+require 'webrat'
 
 require 'deployed_at'
 
+
+Webrat.configure do |config|
+  config.mode = :sinatra
+end
 
 def create_user(attributes = {})
   default_attributes = {
