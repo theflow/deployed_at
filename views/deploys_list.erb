@@ -1,5 +1,32 @@
+<div class="span-22">
+  <% for year in @years %>
+  <div class="span-6 append-bottom">
+    <h2><%= year %></h2>
+    <ul class="archive">
+      <li><%= link_to_month('December',  "#{year}-12", @project, @grouped_deploys) %></li>
+      <li><%= link_to_month('November',  "#{year}-11", @project, @grouped_deploys) %></li>
+      <li><%= link_to_month('October',   "#{year}-10", @project, @grouped_deploys) %></li>
+      <li><%= link_to_month('September', "#{year}-09", @project, @grouped_deploys) %></li>
+      <li><%= link_to_month('August',    "#{year}-08", @project, @grouped_deploys) %></li>
+      <li><%= link_to_month('July',      "#{year}-07", @project, @grouped_deploys) %></li>
+    </ul>
+
+    <ul class="archive">
+      <li><%= link_to_month('June',     "#{year}-06", @project, @grouped_deploys) %></li>
+      <li><%= link_to_month('May',      "#{year}-05", @project, @grouped_deploys) %></li>
+      <li><%= link_to_month('April',    "#{year}-04", @project, @grouped_deploys) %></li>
+      <li><%= link_to_month('March',    "#{year}-03", @project, @grouped_deploys) %></li>
+      <li><%= link_to_month('February', "#{year}-02", @project, @grouped_deploys) %></li>
+      <li><%= link_to_month('January',  "#{year}-01", @project, @grouped_deploys) %></li>
+    </ul>
+  </div>
+  <% end %>
+</div>
+
+<hr />
+
 <table>
-  <% @deploys.each_with_index do |deploy, i| %>
+  <% @last_deploys.each_with_index do |deploy, i| %>
   <tr class="large <%= i % 2 == 0 ? 'even' : '' %>">
     <td><a href="/deploys/<%= deploy.id %>"><%= deploy.title %></a> <span class="small">(<%= deploy.changes %> changes)</span></td>
     <td>by <%= deploy.user %></td>

@@ -30,3 +30,13 @@ pre {
   font-family: Monaco, "Lucida Console", monospace;
   font-size: 12px;
 }
+
+ul.archive {
+  float: left;
+  list-style-type: none;
+  margin: 0 40px 0 0;
+}
+
+ul.archive li a {
+  font-weight: bold;
+}

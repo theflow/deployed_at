@@ -36,6 +36,34 @@ class DeployTest < Test::Unit::TestCase
     assert_equal 2, deploy.get_number_of_changes
   end
 
+  test 'group by date should return empty hash' do
+    project = create_project
+    assert_equal Hash.new, project.all_deploys_grouped_by_date
+  end
+
+  test 'should return deploys grouped by month' do
+    project = create_project
+    deploy1 = create_deploy(:project => project, :created_at => '2009-01-01')
+    deploy2 = create_deploy(:project => project, :created_at => '2009-01-02')
+    deploy3 = create_deploy(:project => project, :created_at => '2009-02-02')
+
+    grouped_deploys = project.all_deploys_grouped_by_date
+    assert_equal 2, grouped_deploys.keys.size
+    assert_equal [deploy2, deploy1], grouped_deploys['2009-01']
+    assert_equal [deploy3], grouped_deploys['2009-02']
+  end
+
+  test 'should find all deploys in a specific month' do
+    project = create_project
+    deploy1 = create_deploy(:project => project, :created_at => '2009-01-01')
+    deploy2 = create_deploy(:project => project, :created_at => '2009-01-31')
+    deploy3 = create_deploy(:project => project, :created_at => '2009-02-28')
+
+    assert_equal [deploy2, deploy1], Deploy.in_month('2009-01')
+    assert_equal [deploy3], Deploy.in_month('2009-02')
+    assert_equal [], Deploy.in_month('2009-03')
+  end
+
   test 'should create multiple subscriptions' do
     user = create_user
     project1 = create_project(:name => 'project_1')

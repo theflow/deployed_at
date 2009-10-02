@@ -43,6 +43,16 @@ class Deploy
   def notify
     DeployMailer.send(project, current_rev, head_rev, scm_log)
   end
+
+  def month
+    created_at.strftime('%Y-%m')
+  end
+
+  def self.in_month(year_month)
+    year, month = year_month.split('-')
+    next_month = "#{year}-%02i" % (month.to_i + 1)
+    all(:created_at.gte => year_month, :created_at.lt => next_month, :order => [:created_at.desc])
+  end
 end
 
 class Project
@@ -55,6 +65,13 @@ class Project
 
   has n, :subscriptions
   has n, :users, :through => :subscriptions
+
+  def all_deploys_grouped_by_date
+    deploys.all(:order => [:created_at.desc]).inject({}) do |groups, deploy|
+      (groups[deploy.month] ||= []) << deploy
+      groups
+    end
+  end
 
   def self.find_or_create(name)
     project = self.first(:name => name)
@@ -150,7 +167,14 @@ end
 
 get '/projects/:id' do
   @project = Project.get(params[:id])
-  @deploys = @project.deploys.all(:order => [:created_at.desc])
+  if params[:show]
+    @last_deploys = @project.deploys.in_month(params[:show])
+  else
+    @last_deploys = @project.deploys.all(:order => [:created_at.desc], :limit => 10)
+  end
+
+  @grouped_deploys = @project.all_deploys_grouped_by_date
+  @years = @grouped_deploys.keys.map { |month| month.split('-').first }.uniq
 
   @title = "Recent deploys for #{@project.name}"
   erb :deploys_list
@@ -218,5 +242,14 @@ helpers do
 
   def format_time(time)
     time.strftime('%b %d %H:%M')
+  end
+
+  def link_to_month(month_name, month, project, grouped_deploys)
+    number_of_deploys = grouped_deploys.has_key?(month) ? grouped_deploys[month].size : 0
+    if number_of_deploys == 0
+      month_name
+    else
+      "<a href=\"/projects/#{project.id}?show=#{month}\">#{month_name}</a> <small>(#{number_of_deploys})</small>"
+    end
   end
 end
