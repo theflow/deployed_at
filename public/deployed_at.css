@@ -32,9 +32,8 @@ pre {
 }
 
 ul.archive {
-  float: left;
   list-style-type: none;
-  margin: 0 40px 0 0;
+  margin: 0;
 }
 
 ul.archive li a {

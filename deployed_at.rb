@@ -174,7 +174,7 @@ get '/projects/:id' do
   end
 
   @grouped_deploys = @project.all_deploys_grouped_by_date
-  @years = @grouped_deploys.keys.map { |month| month.split('-').first }.uniq
+  @years = @grouped_deploys.keys.map { |month| month.split('-').first }.uniq.sort.reverse
 
   @title = "Recent deploys for #{@project.name}"
   erb :deploys_list
@@ -247,7 +247,7 @@ helpers do
   def link_to_month(month_name, month, project, grouped_deploys)
     number_of_deploys = grouped_deploys.has_key?(month) ? grouped_deploys[month].size : 0
     if number_of_deploys == 0
-      month_name
+      "<span class=\"quiet\">#{month_name}</span>"
     else
       "<a href=\"/projects/#{project.id}?show=#{month}\">#{month_name}</a> <small>(#{number_of_deploys})</small>"
     end
