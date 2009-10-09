@@ -1,7 +1,6 @@
 require 'rubygems'
 require 'sinatra'
 require 'dm-core'
-require 'dm-timestamps'
 require 'net/smtp'
 
 DataMapper.setup(:default, "sqlite3://#{Dir.pwd}/database.sqlite3")
@@ -194,7 +193,8 @@ post '/deploys' do
                          :user => params[:user],
                          :scm_log => params[:scm_log],
                          :head_rev => params[:head_rev],
-                         :current_rev => params[:current_rev])
+                         :current_rev => params[:current_rev],
+                         :created_at => params[:date] || Time.now)
 end
 
 get '/session' do
